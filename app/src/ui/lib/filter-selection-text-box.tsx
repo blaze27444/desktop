@@ -6,18 +6,29 @@ import * as octicons from '../octicons/octicons.generated'
 import { Popover, PopoverAnchorPosition, PopoverDecoration } from './popover'
 import { Checkbox, CheckboxValue } from './checkbox'
 
+export type FilterOption = {
+  id: string
+  label: string
+  value: CheckboxValue
+}
+
+interface IFilterSelectionTextBoxProps extends ITextBoxProps {
+  readonly filterOptions: ReadonlyArray<FilterOption>
+  readonly onFilterOptionChanged: (filterOption: FilterOption) => void
+}
+
 interface IFilterSelectionTextBoxState {
   readonly isPopoverOpen: boolean
 }
 
 export class FilterSelectionTextBox extends React.Component<
-  ITextBoxProps,
+  IFilterSelectionTextBoxProps,
   IFilterSelectionTextBoxState
 > {
   private filterIconRef = React.createRef<HTMLSpanElement>()
   public textBoxRef = React.createRef<TextBox>()
 
-  public constructor(props: ITextBoxProps) {
+  public constructor(props: IFilterSelectionTextBoxProps) {
     super(props)
     this.state = {
       isPopoverOpen: false,
@@ -54,7 +65,28 @@ export class FilterSelectionTextBox extends React.Component<
     })
   }
 
+  private getFilterOptionChangedCallback = (filterOption: FilterOption) => {
+    return (event: React.FormEvent<HTMLInputElement>) => {
+      this.props.onFilterOptionChanged({
+        ...filterOption,
+        value: event.currentTarget.checked
+          ? CheckboxValue.On
+          : CheckboxValue.Off,
+      })
+    }
+  }
+
   private renderPopover() {
+    const filterOptions = this.props.filterOptions.map(option => {
+      return (
+        <Checkbox
+          key={option.id}
+          value={option.value}
+          label={option.label}
+          onChange={this.getFilterOptionChangedCallback(option)}
+        />
+      )
+    })
     return (
       <Popover
         ariaLabelledby="filter-popover-header"
@@ -65,10 +97,7 @@ export class FilterSelectionTextBox extends React.Component<
         onClickOutside={this.closePopover}
       >
         <h3 id="filter-popover-header">Filter Options</h3>
-        <Checkbox
-          value={CheckboxValue.Off}
-          label="Checked Changes (to be committed)"
-        />
+        {filterOptions}
       </Popover>
     )
   }

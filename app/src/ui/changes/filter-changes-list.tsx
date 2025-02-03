@@ -61,7 +61,10 @@ import { ClickSource } from '../lib/list'
 import memoizeOne from 'memoize-one'
 import { IMatches } from '../../lib/fuzzy-find'
 import { Button } from '../lib/button'
-import { FilterSelectionTextBox } from '../lib/filter-selection-text-box'
+import {
+  FilterOption,
+  FilterSelectionTextBox,
+} from '../lib/filter-selection-text-box'
 
 interface IChangesListItem extends IFilterListItem {
   readonly id: string
@@ -1193,6 +1196,16 @@ export class FilterChangesList extends React.Component<
           onValueChanged={this.onFilterTextChanged}
           onKeyDown={this.onFilterKeyDown}
           value={this.state.filterText}
+          filterOptions={[
+            {
+              id: 'to-be-committed-files',
+              label: 'Checked (to be committed',
+              value: this.state.filterToIncludedCommit
+                ? CheckboxValue.On
+                : CheckboxValue.Off,
+            },
+          ]}
+          onFilterOptionChanged={this.onFilterOptionsChanged}
         />
 
         <Button
@@ -1207,6 +1220,14 @@ export class FilterChangesList extends React.Component<
         </Button>
       </div>
     )
+  }
+
+  private onFilterOptionsChanged = (option: FilterOption) => {
+    if (option.id === 'to-be-committed-files') {
+      this.setState({
+        filterToIncludedCommit: option.value === CheckboxValue.On,
+      })
+    }
   }
 
   private isIncludedInCommit(item: IChangesListItem) {
