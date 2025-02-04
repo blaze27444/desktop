@@ -105,7 +105,11 @@ export class FilterSelectionTextBox extends React.Component<
   public render() {
     return (
       <>
-        <Button onClick={this.onToggleFilterSelection}>
+        <Button
+          onClick={this.onToggleFilterSelection}
+          ariaLabel="Filter Options"
+          ariaExpanded={this.state.isPopoverOpen}
+        >
           <span ref={this.filterIconRef}>
             <Octicon className="prefixed-icon" symbol={octicons.search} />
           </span>
