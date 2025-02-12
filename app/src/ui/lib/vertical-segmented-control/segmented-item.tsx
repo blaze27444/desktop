@@ -6,6 +6,12 @@ interface ISegmentedItemProps<T> {
    * An id for the item, used to assist in accessibility
    */
   readonly id: string
+
+  /**
+   * An optional id for the parent element, used as `name` for the radio
+   * input. This is used to ensure that only one item in the group can be
+   * selected at a time.
+   */
   readonly parentId?: string
 
   /**
