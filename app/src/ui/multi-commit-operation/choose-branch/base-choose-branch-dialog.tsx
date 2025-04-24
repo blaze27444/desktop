@@ -184,6 +184,7 @@ export class ChooseBranchDialog extends React.Component<
       case MultiCommitOperationKind.Rebase:
         dispatcher.showRebaseDialog(repository, selectedBranch)
         break
+      case MultiCommitOperationKind.RemediateSecret:
       case MultiCommitOperationKind.CherryPick:
       case MultiCommitOperationKind.Reorder:
         break

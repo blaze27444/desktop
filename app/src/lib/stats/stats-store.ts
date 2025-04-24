@@ -993,6 +993,9 @@ export class StatsStore implements IStatsStore {
         return this.increment('squashConflictsEncounteredCount')
       case MultiCommitOperationKind.Reorder:
         return this.increment('reorderConflictsEncounteredCount')
+      case MultiCommitOperationKind.RemediateSecret:
+        // TODO: implement this
+        break
       case MultiCommitOperationKind.Rebase:
         // ignored because rebase records different stats
         return
@@ -1017,6 +1020,9 @@ export class StatsStore implements IStatsStore {
         return this.increment('reorderSuccessfulCount')
       case MultiCommitOperationKind.CherryPick:
         return this.increment('cherryPickSuccessfulCount')
+      case MultiCommitOperationKind.RemediateSecret:
+        // TODO: this should be tracked in the future
+        return
       case MultiCommitOperationKind.Rebase:
         // ignored because rebase records different stats
         return
@@ -1040,6 +1046,9 @@ export class StatsStore implements IStatsStore {
         return this.increment('reorderSuccessfulWithConflictsCount')
       case MultiCommitOperationKind.Rebase:
         return this.increment('rebaseSuccessAfterConflictsCount')
+      case MultiCommitOperationKind.RemediateSecret:
+        // TODO: this should be tracked in the future
+        return
       case MultiCommitOperationKind.CherryPick:
       case MultiCommitOperationKind.Merge:
         log.error(
@@ -1061,6 +1070,9 @@ export class StatsStore implements IStatsStore {
         return this.increment('reorderUndoneCount')
       case MultiCommitOperationKind.CherryPick:
         return this.increment('cherryPickUndoneCount')
+      case MultiCommitOperationKind.RemediateSecret:
+        // TODO: this should be tracked in the future
+        return
       case MultiCommitOperationKind.Rebase:
       case MultiCommitOperationKind.Merge:
         log.error(`[recordOperationUndone] - Operation not supported: ${kind}`)

@@ -7609,6 +7609,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
           countCherryPicked: commitsCount,
         }
         break
+      case MultiCommitOperationKind.RemediateSecret:
       case MultiCommitOperationKind.Rebase:
       case MultiCommitOperationKind.Merge:
         throw new Error(

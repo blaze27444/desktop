@@ -1,4 +1,5 @@
 import { MultiCommitOperationConflictState } from '../lib/app-state'
+import { ISecretScanResult } from '../ui/secret-scanning/push-protection-error'
 import { Branch } from './branch'
 import { Commit, CommitOneLine, ICommitContext } from './commit'
 import { GitHubRepository } from './github-repository'
@@ -16,6 +17,7 @@ export const enum MultiCommitOperationKind {
   Squash = 'Squash',
   Merge = 'Merge',
   Reorder = 'Reorder',
+  RemediateSecret = 'RemediateSecret',
 }
 
 /** Type guard which narrows a string to a MultiCommitOperationKind */
@@ -26,13 +28,15 @@ export function isIdMultiCommitOperation(
   | MultiCommitOperationKind.CherryPick
   | MultiCommitOperationKind.Squash
   | MultiCommitOperationKind.Merge
-  | MultiCommitOperationKind.Reorder {
+  | MultiCommitOperationKind.Reorder
+  | MultiCommitOperationKind.RemediateSecret {
   return (
     id === MultiCommitOperationKind.Rebase ||
     id === MultiCommitOperationKind.CherryPick ||
     id === MultiCommitOperationKind.Squash ||
     id === MultiCommitOperationKind.Merge ||
-    id === MultiCommitOperationKind.Reorder
+    id === MultiCommitOperationKind.Reorder ||
+    id === MultiCommitOperationKind.RemediateSecret
   )
 }
 
@@ -48,6 +52,7 @@ export type MultiCommitOperationStep =
   | HideConflictsStep
   | ConfirmAbortStep
   | CreateBranchStep
+  | AmendCommitStep
 
 /**
  * Possible kinds of steps that may happen during a multi commit operation such
@@ -105,6 +110,17 @@ export const enum MultiCommitOperationStepKind {
    * Example: Cherry-picking to a new branch.
    */
   CreateBranch = 'CreateBranch',
+
+  /**
+   * If the user invokes an interactive rebase, where they can edit a commit.
+   *
+   * Example: Remediating a secret detected on push.
+   */
+  AmendCommitStep = 'AmendCommitStep',
+}
+
+export type AmendCommitStep = {
+  readonly kind: MultiCommitOperationStepKind.AmendCommitStep
 }
 
 export type ChooseBranchStep = {
@@ -236,12 +252,18 @@ interface IMergeDetails extends ISourceBranchDetails {
   readonly isSquash: boolean
 }
 
+interface IRemediateSecretDetails extends IInteractiveRebaseDetails {
+  readonly kind: MultiCommitOperationKind.RemediateSecret
+  readonly secrets: ReadonlyArray<ISecretScanResult>
+}
+
 export type MultiCommitOperationDetail =
   | ISquashDetails
   | IReorderDetails
   | ICherryPickDetails
   | IRebaseDetails
   | IMergeDetails
+  | IRemediateSecretDetails
 
 export function instanceOfIBaseRebaseDetails(
   object: any

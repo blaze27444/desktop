@@ -3690,6 +3690,7 @@ export class Dispatcher {
         }
         break
       case MultiCommitOperationKind.Merge:
+      case MultiCommitOperationKind.RemediateSecret:
         throw new Error(`Unexpected multi commit operation kind ${kind}`)
       default:
         assertNever(kind, `Unsupported multi operation kind ${kind}`)
