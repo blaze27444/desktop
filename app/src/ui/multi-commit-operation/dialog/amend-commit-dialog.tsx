@@ -14,7 +14,8 @@ interface IAmendCommitDialogState {
 }
 
 export class AmendCommitDialog extends React.Component<
-  IAmendCommitDialogProps, IAmendCommitDialogState
+  IAmendCommitDialogProps,
+  IAmendCommitDialogState
 > {
   public constructor(props: IAmendCommitDialogProps) {
     super(props)
@@ -52,8 +53,8 @@ export class AmendCommitDialog extends React.Component<
         <DialogContent>
           <div className="column-left" id="abort-operation-confirmation">
             <p>
-              You are amending a commit! Go make the changes you want 
-              and the hit continue to commit and move to the next one.
+              You are amending a commit! Go make the changes you want and the
+              hit continue to commit and move to the next one.
             </p>
           </div>
         </DialogContent>
